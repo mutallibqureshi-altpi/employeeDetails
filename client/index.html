@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <form>
+      <div class="mb-3 mx-auto w-50">
+        <label for="exampleInputEmail1" class="form-label">First Name</label>
+        <input
+          type="text"
+          class="form-control w-50"
+          id="input-box1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+      <div class="mb-3 mx-auto w-50">
+        <label for="exampleInputEmail1" class="form-label">Last Name</label>
+        <input
+          type="text"
+          class="form-control w-50"
+          id="input-box2"
+          aria-describedby="emailHelp"
+        />
+      </div>
+
+      <div
+        class="dropdown-parent d-flex justify-content-between w-50 mx-auto gap-1"
+      >
+        <div class="dropdown">
+          <select class="btn btn-secondary dropdown-toggle" id="dropdown1">
+            <option>
+              <a class="dropdown-item">Role</a>
+            </option>
+            <option value="Developer">
+              <a class="dropdown-item">Developer</a>
+            </option>
+            <option value="Tester"><a class="dropdown-item">Tester</a></option>
+            <option value="Designer">
+              <a class="dropdown-item">Designer</a>
+            </option>
+          </select>
+        </div>
+        <div class="dropdown">
+          <select class="btn btn-secondary dropdown-toggle" id="dropdown2">
+            <option>
+              <a class="dropdown-item">Designation</a>
+            </option>
+            <option value="Junior">
+              <a class="dropdown-item">Junior</a>
+            </option>
+            <option value="Senior"><a class="dropdown-item">Senior</a></option>
+            <option value="Intern">
+              <a class="dropdown-item">Intern</a>
+            </option>
+          </select>
+        </div>
+        <div class="dropdown">
+          <select class="btn btn-secondary dropdown-toggle" id="dropdown3">
+            <option>
+              <a class="dropdown-item">Category</a>
+            </option>
+            <option value="Front-End Developer">
+              <a class="dropdown-item">Front-End Developer</a>
+            </option>
+            <option value="Back-End Developer">
+              <a class="dropdown-item">Back-End Developer</a>
+            </option>
+            <option value="HR">
+              <a class="dropdown-item">HR</a>
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary mx-auto d-flex justify-content-center mt-5 mb-5"
+      >
+        Submit
+      </button>
+    </form>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Role</th>
+          <th scope="col">Designation</th>
+          <th scope="col">Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>Developer</td>
+          <td>Senior</td>
+          <td>Front-End</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>Tester</td>
+          <td>Junior</td>
+          <td>Back-End</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry the Bird</td>
+          <td>demo</td>
+          <td>Designer</td>
+          <td>Intern</td>
+          <td>HR</td>
+        </tr>
+      </tbody>
+    </table>
+    <script src="index.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
