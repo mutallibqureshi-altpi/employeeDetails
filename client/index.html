@@ -10,12 +10,19 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <title>Document</title>
   </head>
   <body>
-    <form>
+    <form id="form-submit">
       <div class="mb-3 mx-auto w-50">
-        <label for="exampleInputEmail1" class="form-label">First Name</label>
+        <label class="form-label">First Name</label>
         <input
           type="text"
           class="form-control w-50"
@@ -24,7 +31,7 @@
         />
       </div>
       <div class="mb-3 mx-auto w-50">
-        <label for="exampleInputEmail1" class="form-label">Last Name</label>
+        <label class="form-label">Last Name</label>
         <input
           type="text"
           class="form-control w-50"
@@ -37,10 +44,8 @@
         class="dropdown-parent d-flex justify-content-between w-50 mx-auto gap-1"
       >
         <div class="dropdown">
+          <label for="floatingSelectGrid">Choose Role</label>
           <select class="btn btn-secondary dropdown-toggle" id="dropdown1">
-            <option>
-              <a class="dropdown-item">Role</a>
-            </option>
             <option value="Developer">
               <a class="dropdown-item">Developer</a>
             </option>
@@ -51,10 +56,8 @@
           </select>
         </div>
         <div class="dropdown">
+          <label for="floatingSelectGrid">Choose Designation</label>
           <select class="btn btn-secondary dropdown-toggle" id="dropdown2">
-            <option>
-              <a class="dropdown-item">Designation</a>
-            </option>
             <option value="Junior">
               <a class="dropdown-item">Junior</a>
             </option>
@@ -65,10 +68,8 @@
           </select>
         </div>
         <div class="dropdown">
+          <label for="floatingSelectGrid">Choose Category</label>
           <select class="btn btn-secondary dropdown-toggle" id="dropdown3">
-            <option>
-              <a class="dropdown-item">Category</a>
-            </option>
             <option value="Front-End Developer">
               <a class="dropdown-item">Front-End Developer</a>
             </option>
@@ -92,40 +93,65 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">id</th>
           <th scope="col">First</th>
           <th scope="col">Last</th>
           <th scope="col">Role</th>
           <th scope="col">Designation</th>
           <th scope="col">Category</th>
+          <th scope="col">button</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
+      <tbody class="kuch"></tbody>
+      <!-- <tbody>
+        <tr class="_1 change-row" id="1">
           <td>Mark</td>
           <td>Otto</td>
           <td>Developer</td>
           <td>Senior</td>
           <td>Front-End</td>
+          <td>
+            <button id="1" class="edit-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+            <button id="delete">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            <button id="save" disabled>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
+        <tr class="_2 change-row" id="2">
+          <td contenteditable="true">Jacob</td>
           <td>Thornton</td>
           <td>Tester</td>
           <td>Junior</td>
           <td>Back-End</td>
+          <td>
+            <button id="2" class="edit-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+            <button id="delete">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
         </tr>
-        <tr>
-          <th scope="row">3</th>
+        <tr class="_3">
           <td>Larry the Bird</td>
           <td>demo</td>
           <td>Designer</td>
           <td>Intern</td>
           <td>HR</td>
+          <td>
+            <button id="3" class="edit-btn">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+            <button id="delete">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
         </tr>
-      </tbody>
+      </tbody> -->
     </table>
     <script src="index.js"></script>
     <script

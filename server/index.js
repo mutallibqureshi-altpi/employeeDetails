@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const db = require("./config/db");
 const employeeData = require("./routes/employee.route");
 const app = express();
@@ -11,6 +12,7 @@ db.connect((err) => {
 });
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use("/", employeeData);
 
