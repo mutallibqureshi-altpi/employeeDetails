@@ -8,117 +8,126 @@ const dropdown = document.querySelectorAll("select");
 let table = document.getElementsByTagName("table");
 
 window.onload = async () => {
+  // reading data
   const loadData = await fetch("http://localhost:5000/");
   const res = await loadData.json();
-  console.log(res);
-  const test = document.getElementsByClassName("kuch")[0];
+  const tbody = document.getElementsByClassName("tbody-data")[0];
+  table = "";
   res.map((val) => {
-    const { firstname, lastname, role_id, designation_id, category_id } = val;
+    const { id, firstname, lastname, role_id, designation_id, category_id } =
+      val;
     table += `
-    <tr class="_1 change-row" id="1">
+    <tr class="_${id} change-row">
     <td>${firstname}</td>
     <td>${lastname}</td>
     <td>${role_id}</td>
     <td>${designation_id}</td>
     <td>${category_id}</td>
     <td>
-      <button id="1" class="edit-btn">
+      <button id=${id} class="edit-btn">
         <i class="fa-regular fa-pen-to-square"></i>
       </button>
-      <button id="delete">
+      <button id=${id} class = "delete-btn">
         <i class="fa-solid fa-trash"></i>
       </button>
-      <button id="save" disabled>
+      <button id=${id} class="save-btn" disabled>
         <i class="fa-solid fa-check"></i>
       </button>
     </td>
   </tr>
     `;
   });
-  // table = `
-  // <tr class="_1 change-row" id="1">
-  //   <td>Mark</td>
-  //   <td>Otto</td>
-  //   <td>Developer</td>
-  //   <td>Senior</td>
-  //   <td>Front-End</td>
-  //   <td>
-  //     <button id="1" class="edit-btn">
-  //       <i class="fa-regular fa-pen-to-square"></i>
-  //     </button>
-  //     <button id="delete">
-  //       <i class="fa-solid fa-trash"></i>
-  //     </button>
-  //     <button id="save" disabled>
-  //       <i class="fa-solid fa-check"></i>
-  //     </button>
-  //   </td>
-  // </tr>
-  // <tr class="_2 change-row" id="2">
-  //   <td contenteditable="true">Jacob</td>
-  //   <td>Thornton</td>
-  //   <td>Tester</td>
-  //   <td>Junior</td>
-  //   <td>Back-End</td>
-  //   <td>
-  //     <button id="2" class="edit-btn">
-  //       <i class="fa-regular fa-pen-to-square"></i>
-  //     </button>
-  //     <button id="delete">
-  //       <i class="fa-solid fa-trash"></i>
-  //     </button>
-  //   </td>
-  // </tr>
-  // <tr class="_3">
-  //   <td>Larry the Bird</td>
-  //   <td>demo</td>
-  //   <td>Designer</td>
-  //   <td>Intern</td>
-  //   <td>HR</td>
-  //   <td>
-  //     <button id="3" class="edit-btn">
-  //       <i class="fa-regular fa-pen-to-square"></i>
-  //     </button>
-  //     <button id="delete">
-  //       <i class="fa-solid fa-trash"></i>
-  //     </button>
-  //   </td>
-  // </tr>
+  tbody.innerHTML = table;
+  const editBtn = document.querySelectorAll(".edit-btn");
+  const deleteBtn = document.querySelectorAll(".delete-btn");
 
-  // `;
-  test.innerHTML = table;
-  const editBtn1 = document.querySelectorAll(".edit-btn");
-  const deleteBtn = document.querySelectorAll("#delete");
-  const saveBtn = document.querySelectorAll(".save");
-
-  editBtn1.forEach((btn) =>
+  // update data
+  editBtn.forEach((btn) =>
     btn.addEventListener("click", () => {
-      // const selectClass = document.querySelectorAll(".change-row");
-      // selectClass.forEach((data) => {
-      //   if (data.id === btn.id) {
-      //     data.setAttribute("contenteditable", true);
-      //     saveBtn.removeAttribute("disabled");
-      //   }
-      // });
-      const validClassName = "_" + btn.id;
-      const targetElement = document.querySelector("." + validClassName);
+      const editBtnClass = "_" + btn.id;
+      const currElement = document.querySelector("." + editBtnClass);
 
-      if (targetElement) {
-        targetElement.setAttribute("contenteditable", true);
-        saveBtn.removeAttribute("disabled");
+      if (currElement) {
+        currElement.setAttribute("contenteditable", "true");
+        const saveButton = currElement.querySelector(".save-btn");
+        if (saveButton) {
+          saveButton.removeAttribute("disabled");
+          saveButton.addEventListener("click", () => {
+            const updatedRow = {
+              id: btn.id,
+              firstname:
+                currElement.querySelector("td:nth-child(1)").textContent,
+              lastname:
+                currElement.querySelector("td:nth-child(2)").textContent,
+              role_id: currElement.querySelector("td:nth-child(3)").textContent,
+              designation_id:
+                currElement.querySelector("td:nth-child(4)").textContent,
+              category_id:
+                currElement.querySelector("td:nth-child(5)").textContent,
+            };
+            const url = `http://localhost:5000/${updatedRow.id}`;
+            const options = {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updatedRow),
+            };
+
+            fetch(url, options)
+              .then((response) => {
+                if (response) {
+                  console.log("PUT request was successful");
+                  currElement.removeAttribute("contenteditable");
+                  saveButton.setAttribute("disabled", "true");
+                } else {
+                  console.error("PUT request failed");
+                }
+              })
+              .catch((error) => {
+                console.error("Network error:", error);
+              });
+            location.reload();
+          });
+        }
       } else {
-        console.log("Element not found for class: " + validClassName);
+        console.log("Element not found for class: " + editBtnClass);
       }
-
-      deleteBtn.forEach((btn) => {
-        btn.addEventListener("click", () => console.log("click"));
-      });
     })
   );
+
+  // delete data
+  deleteBtn.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const url = `http://localhost:5000/${btn.id}`;
+
+      const options = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(url, options)
+        .then((response) => {
+          if (response) {
+            console.log("DELETE request was successful");
+          } else {
+            console.error("DELETE request failed");
+          }
+        })
+        .catch((error) => {
+          console.error("Network error:", error);
+        });
+      location.reload();
+    });
+  });
 };
 
 const submitFormBtn = async (e) => {
   e.preventDefault();
+
+  // inserting data
   const data = {
     firstName: firstName.value,
     lastName: lastName.value,
@@ -128,7 +137,7 @@ const submitFormBtn = async (e) => {
   };
 
   try {
-    const response = await fetch("http://localhost:5000/", {
+    const response = await fetch("http://localhost:5000", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -136,17 +145,14 @@ const submitFormBtn = async (e) => {
       },
     });
 
-    if (response.ok) {
-      const res = await response.json();
-      console.log(res);
-    } else {
-      console.error("Server error:", response.status, response.statusText);
-    }
+    const res = await response.json();
+    console.log(res);
   } catch (error) {
     console.error("An error occurred:", error);
   }
   firstName.value = "";
   lastName.value = "";
+  location.reload();
 };
 
 formSubmit.addEventListener("submit", submitFormBtn);

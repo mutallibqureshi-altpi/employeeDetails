@@ -1,16 +1,15 @@
 const db = require("../config/db");
 
 const getUser = (req, res) => {
-  const sql = "SELECT * from employeemaster";
-  db.query(sql, (err, result) => {
+  db.query("SELECT * from employeemaster", (err, result) => {
     if (err) throw err;
     console.log("read");
-    res.send(result);
+    res.status(201).send(result);
   });
 };
 const postUser = (req, res) => {
-  const { firstName, lastName, role, designation, category } = req.body;
-  console.log(req.body);
+  const { firstName, lastName, role_id, designation_id, category_id } =
+    req.body;
   if (!firstName || !lastName) {
     res.status(400).send("This is required");
     return;
@@ -18,42 +17,36 @@ const postUser = (req, res) => {
 
   db.query(
     "INSERT INTO employeemaster (firstname, lastname,role_id, designation_id, category_id) VALUES (?,?,?,?,?)",
-    [firstName, lastName, role, designation, category],
+    [firstName, lastName, role_id, designation_id, category_id],
     (err, result) => {
-      if (err) {
-        console.error("Error inserting data:", err);
-        res.status(500).send("Internal Server Error");
-      } else {
-        console.log("Data added");
-        res.status(201).send(result);
-      }
+      if (err) throw err;
+      console.log("Data added");
+      res.status(201).send(result);
     }
   );
 };
 
 const updateUser = (req, res) => {
   const { id } = req.params;
+  const { firstname, lastname, role_id, designation_id, category_id } =
+    req.body;
   db.query(
-    "UPDATE employeedata SET role = ? WHERE id = ?",
-    [id],
+    "UPDATE employeemaster SET firstname=?, lastname = ?, role_id =?, designation_id=?, category_id = ? WHERE id = ?",
+    [firstname, lastname, role_id, designation_id, category_id, id],
     (err, result) => {
-      if (err) throw err;
-      res.send(result);
+      if (err) throw err.message;
+      console.log("data updated");
+      res.status(201).send(result);
     }
   );
 };
+
 const deleteUser = (req, res) => {
   const { id } = req.params;
   db.query("DELETE FROM employeemaster WHERE id=?", [id], (err, result) => {
-    if (err) {
-      console.error(err);
-      res
-        .status(500)
-        .json({ error: "An error occurred while deleting the user." });
-    } else {
-      res.status(200).json({ message: "User deleted successfully." });
-      console.log(result);
-    }
+    if (err) throw err;
+    res.status(200).json({ message: "User deleted successfully." });
+    console.log("data deleted");
   });
 };
 
