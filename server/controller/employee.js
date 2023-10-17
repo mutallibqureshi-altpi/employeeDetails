@@ -21,9 +21,53 @@ const postUser = (req, res) => {
     (err, result) => {
       if (err) throw err;
       console.log("Data added");
-      res.status(201).send(result);
     }
   );
+
+  let empId;
+  db.query("SELECT * FROM employeemaster", (err, res) => {
+    if (err) throw err;
+    else {
+      empId = res.at(-1).id;
+      db.query(
+        "INSERT INTO rolemaster (role, empId) VALUES (?, ?)",
+        [role_id, empId],
+        (err, res) => {
+          if (err) throw err;
+        }
+      );
+    }
+  });
+  let desId;
+  db.query("SELECT * FROM employeemaster", (err, res) => {
+    if (err) throw err;
+    else {
+      desId = res.at(-1).id;
+      db.query(
+        "INSERT INTO designationmaster (designation, desId) VALUES (?, ?)",
+        [designation_id, desId],
+        (err, res) => {
+          if (err) throw err;
+        }
+      );
+    }
+  });
+  let cateId;
+  db.query("SELECT * FROM employeemaster", (err, res) => {
+    if (err) throw err;
+    else {
+      cateId = res.at(-1).id;
+      db.query(
+        "INSERT INTO categorymaster (category, cateId) VALUES (?, ?)",
+        [category_id, cateId],
+        (err, res) => {
+          if (err) throw err;
+        }
+      );
+    }
+  });
+
+  res.status(201).json({ message: "Created User" });
 };
 
 const updateUser = (req, res) => {
@@ -43,10 +87,31 @@ const updateUser = (req, res) => {
 
 const deleteUser = (req, res) => {
   const { id } = req.params;
-  db.query("DELETE FROM employeemaster WHERE id=?", [id], (err, result) => {
+  db.query("DELETE FROM rolemaster WHERE empId=?", [id], (err, result) => {
     if (err) throw err;
-    res.status(200).json({ message: "User deleted successfully." });
-    console.log("data deleted");
+    db.query(
+      "DELETE FROM categorymaster WHERE cateId=?",
+      [id],
+      (err, result) => {
+        if (err) throw err;
+        db.query(
+          "DELETE FROM designationmaster WHERE desId=?",
+          [id],
+          (err, result) => {
+            if (err) throw err;
+            db.query(
+              "DELETE FROM employeemaster WHERE id=?",
+              [id],
+              (err, result) => {
+                if (err) throw err;
+                res.status(200).json({ message: "User deleted successfully." });
+                console.log("data deleted");
+              }
+            );
+          }
+        );
+      }
+    );
   });
 };
 
