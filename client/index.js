@@ -7,7 +7,39 @@ const category = document.getElementById("dropdown3");
 const dropdown = document.querySelectorAll("select");
 let table = document.getElementsByTagName("table");
 
+let updatedRow;
+
 window.onload = async () => {
+  // role-option
+  const roleData = await fetch("http://localhost:5000/getrole").then((val) =>
+    val.json()
+  );
+  let list = "";
+  roleData.map((curr) => {
+    list += `<option value="${curr.id}">${curr.role}</option>`;
+  });
+  role.innerHTML = list;
+
+  // designation-option
+  const designationData = await fetch(
+    "http://localhost:5000/getdesignation"
+  ).then((val) => val.json());
+  let designationOption = "";
+  designationData.map((curr) => {
+    designationOption += `<option value="${curr.id}">${curr.designation}</option>`;
+  });
+  designation.innerHTML = designationOption;
+
+  // category-option
+  const categoryData = await fetch("http://localhost:5000/getcategory").then(
+    (val) => val.json()
+  );
+  let categoryOption = "";
+  categoryData.map((curr) => {
+    categoryOption += `<option value="${curr.id}">${curr.category}</option>`;
+  });
+  category.innerHTML = categoryOption;
+
   // reading data
   const loadData = await fetch("http://localhost:5000/");
   const res = await loadData.json();
@@ -24,7 +56,7 @@ window.onload = async () => {
     <td>${designation_id}</td>
     <td>${category_id}</td>
     <td>
-      <button id=${id} class="edit-btn">
+      <button data-id=${id} type="button" class="edit-btn">
         <i class="fa-regular fa-pen-to-square"></i>
       </button>
       <button id=${id} class = "delete-btn">
@@ -44,54 +76,57 @@ window.onload = async () => {
   // update data
   editBtn.forEach((btn) =>
     btn.addEventListener("click", () => {
-      const editBtnClass = "_" + btn.id;
+      const editBtnClass = "_" + btn.dataset.id;
       const currElement = document.querySelector("." + editBtnClass);
-
       if (currElement) {
         currElement.setAttribute("contenteditable", "true");
         const saveButton = currElement.querySelector(".save-btn");
+        updatedRow = {
+          id: btn.dataset.id,
+          firstname: currElement.querySelector("td:nth-child(1)").textContent,
+          lastname: currElement.querySelector("td:nth-child(2)").textContent,
+          role_id: currElement.querySelector("td:nth-child(3)").textContent,
+          designation_id:
+            currElement.querySelector("td:nth-child(4)").textContent,
+          category_id: currElement.querySelector("td:nth-child(5)").textContent,
+        };
+        firstName.defaultValue = updatedRow.firstname;
+        lastName.defaultValue = updatedRow.lastname;
+        role.defaultValue = updatedRow.role_id;
+        designation.defaultValue = updatedRow.designation_id;
+        category.defaultValue = updatedRow.category_id;
         if (saveButton) {
           saveButton.removeAttribute("disabled");
-          saveButton.addEventListener("click", () => {
-            const updatedRow = {
-              id: btn.id,
-              firstname:
-                currElement.querySelector("td:nth-child(1)").textContent,
-              lastname:
-                currElement.querySelector("td:nth-child(2)").textContent,
-              role_id: currElement.querySelector("td:nth-child(3)").textContent,
-              designation_id:
-                currElement.querySelector("td:nth-child(4)").textContent,
-              category_id:
-                currElement.querySelector("td:nth-child(5)").textContent,
+          saveButton.addEventListener("click", function () {
+            console.log("isd");
+            const newUpdatedRow = {
+              firstname: firstName.value,
+              lastname: lastName.value,
+              category_id: category.value,
+              designation_id: designation.value,
+              role_id: role.value,
             };
-            const url = `http://localhost:5000/${updatedRow.id}`;
-            const options = {
+            fetch(`http://localhost:5000/${updatedRow.id}`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(updatedRow),
-            };
-
-            fetch(url, options)
+              body: JSON.stringify(newUpdatedRow),
+            })
               .then((response) => {
-                if (response) {
+                if (response.ok) {
                   console.log("PUT request was successful");
-                  currElement.removeAttribute("contenteditable");
-                  saveButton.setAttribute("disabled", "true");
                 } else {
                   console.error("PUT request failed");
                 }
+                editable = false;
+                location.reload();
               })
               .catch((error) => {
-                console.error("Network error:", error);
+                console.error("Network error:", error.message);
               });
-            location.reload();
           });
         }
-      } else {
-        console.log("Element not found for class: " + editBtnClass);
       }
     })
   );
@@ -126,15 +161,15 @@ window.onload = async () => {
 
 const submitFormBtn = async (e) => {
   e.preventDefault();
-
   // inserting data
   const data = {
     firstName: firstName.value,
     lastName: lastName.value,
-    role: role.value,
-    designation: designation.value,
-    category: category.value,
+    role_id: role.value,
+    designation_id: designation.value,
+    category_id: category.value,
   };
+  console.log(data);
 
   try {
     const response = await fetch("http://localhost:5000", {

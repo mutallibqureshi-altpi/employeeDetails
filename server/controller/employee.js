@@ -1,12 +1,81 @@
 const db = require("../config/db");
 
-const getUser = (req, res) => {
-  db.query("SELECT * from employeemaster", (err, result) => {
-    if (err) throw err;
-    console.log("read");
-    res.status(201).send(result);
-  });
+const getUser = async (req, res) => {
+  const users = [];
+  try {
+    const result = await new Promise((resolve, reject) => {
+      db.query("SELECT * from employeemaster", (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    for (const curr of result) {
+      const roleResult = await new Promise((resolve, reject) => {
+        db.query(
+          `SELECT role from rolemaster where id = ${curr.role_id}`,
+          (err, res) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
+          }
+        );
+      });
+
+      const designationResult = await new Promise((resolve, reject) => {
+        db.query(
+          `SELECT designation from designationmaster where id = ${curr.designation_id}`,
+          (err, res) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
+          }
+        );
+      });
+
+      const categoryResult = await new Promise((resolve, reject) => {
+        db.query(
+          `SELECT category from categorymaster where id = ${curr.category_id}`,
+          (err, res) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
+          }
+        );
+      });
+
+      const role = roleResult[0].role;
+      const designation = designationResult[0].designation;
+      const category = categoryResult[0].category;
+
+      const user = {
+        id: curr.id,
+        firstname: curr.firstname,
+        lastname: curr.lastname,
+        role_id: role,
+        designation_id: designation,
+        category_id: category,
+      };
+
+      users.push(user);
+    }
+
+    res.status(201).send(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("An error occurred");
+  }
 };
+
 const postUser = (req, res) => {
   const { firstName, lastName, role_id, designation_id, category_id } =
     req.body;
@@ -23,50 +92,6 @@ const postUser = (req, res) => {
       console.log("Data added");
     }
   );
-
-  let empId;
-  db.query("SELECT * FROM employeemaster", (err, res) => {
-    if (err) throw err;
-    else {
-      empId = res.at(-1).id;
-      db.query(
-        "INSERT INTO rolemaster (role, empId) VALUES (?, ?)",
-        [role_id, empId],
-        (err, res) => {
-          if (err) throw err;
-        }
-      );
-    }
-  });
-  let desId;
-  db.query("SELECT * FROM employeemaster", (err, res) => {
-    if (err) throw err;
-    else {
-      desId = res.at(-1).id;
-      db.query(
-        "INSERT INTO designationmaster (designation, desId) VALUES (?, ?)",
-        [designation_id, desId],
-        (err, res) => {
-          if (err) throw err;
-        }
-      );
-    }
-  });
-  let cateId;
-  db.query("SELECT * FROM employeemaster", (err, res) => {
-    if (err) throw err;
-    else {
-      cateId = res.at(-1).id;
-      db.query(
-        "INSERT INTO categorymaster (category, cateId) VALUES (?, ?)",
-        [category_id, cateId],
-        (err, res) => {
-          if (err) throw err;
-        }
-      );
-    }
-  });
-
   res.status(201).json({ message: "Created User" });
 };
 
@@ -87,32 +112,91 @@ const updateUser = (req, res) => {
 
 const deleteUser = (req, res) => {
   const { id } = req.params;
-  db.query("DELETE FROM rolemaster WHERE empId=?", [id], (err, result) => {
+  db.query("DELETE FROM employeemaster WHERE id=?", [id], (err, result) => {
     if (err) throw err;
-    db.query(
-      "DELETE FROM categorymaster WHERE cateId=?",
-      [id],
-      (err, result) => {
-        if (err) throw err;
-        db.query(
-          "DELETE FROM designationmaster WHERE desId=?",
-          [id],
-          (err, result) => {
-            if (err) throw err;
-            db.query(
-              "DELETE FROM employeemaster WHERE id=?",
-              [id],
-              (err, result) => {
-                if (err) throw err;
-                res.status(200).json({ message: "User deleted successfully." });
-                console.log("data deleted");
-              }
-            );
-          }
-        );
-      }
-    );
+    res.status(200).json({ message: "User deleted successfully." });
+    console.log("data deleted");
   });
 };
 
-module.exports = { getUser, postUser, updateUser, deleteUser };
+const getRole = (req, res) => {
+  db.query("SELECT * FROM rolemaster", (err, result) => {
+    if (err) throw err;
+    res.status(201).send(result);
+    console.log("read");
+  });
+};
+const getDesignation = (req, res) => {
+  db.query("SELECT * FROM designationmaster", (err, result) => {
+    if (err) throw err;
+    res.status(201).send(result);
+    console.log("read");
+  });
+};
+const getCategory = (req, res) => {
+  db.query("SELECT * FROM categorymaster", (err, result) => {
+    if (err) throw err;
+    res.status(201).send(result);
+    console.log("read");
+  });
+};
+
+const postRole = (req, res) => {
+  const { role } = req.body;
+  if (!role) {
+    return res.send(400).send("This is required");
+  }
+  db.query(
+    "INSERT INTO rolemaster (role) VALUES (?)",
+    [role],
+    (err, result) => {
+      if (err) throw err;
+      console.log("role");
+      res.send(result);
+    }
+  );
+};
+const postDesignation = (req, res) => {
+  const { designation } = req.body;
+  if (!designation) {
+    return res.send(400).send("This is required");
+  }
+  db.query(
+    "INSERT INTO designationmaster (designation) VALUES (?)",
+    [designation],
+    (err, result) => {
+      if (err) throw err;
+      console.log("designation");
+      res.send(result);
+    }
+  );
+};
+const postCategory = (req, res) => {
+  const { category } = req.body;
+  if (!category) {
+    return res.send(400).send("This is required");
+  }
+
+  db.query(
+    "INSERT INTO categorymaster (category) VALUES (?)",
+    [category],
+    (err, result) => {
+      if (err) throw err;
+      console.log("category");
+      res.send(result);
+    }
+  );
+};
+
+module.exports = {
+  getUser,
+  postUser,
+  updateUser,
+  deleteUser,
+  getRole,
+  getDesignation,
+  getCategory,
+  postRole,
+  postDesignation,
+  postCategory,
+};
