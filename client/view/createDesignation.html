@@ -10,17 +10,24 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
     <form id="designation-form">
       <div class="mb-3">
-        <label class="form-label">First Name</label>
+        <label class="form-label">Create Designation</label>
         <input
           type="text"
           class="form-control"
           id="designation-input"
           aria-describedby="emailHelp"
-          placeholder="Enter Your Role"
+          placeholder="Enter Your Designation"
         />
       </div>
       <div class="text-center">
@@ -28,6 +35,18 @@
       </div>
     </form>
     <a href="../index.html">Back To Home</a>
+    <div class="container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Sr no</th>
+            <th scope="col">Designation</th>
+            <th scope="col">Button</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
     <script src="../js/designation.js"></script>
   </body>
 </html>

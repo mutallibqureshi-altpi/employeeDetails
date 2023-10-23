@@ -14,7 +14,7 @@ window.onload = async () => {
     <td>${data.id}</td>
     <td>${data.role}</td>
     <td>
-    <button data-id=${data.id} type="button" class="edit-btn">
+    <button id=_${data.id} type="button" class ="edit-btn">
       <i class="fa-regular fa-pen-to-square"></i>
     </button>
     <button id=${data.id} class = "delete-btn">
@@ -29,17 +29,40 @@ window.onload = async () => {
     `;
   });
   tbody.innerHTML = table;
+  const editBtn = document.querySelectorAll(".edit-btn");
+  editBtn.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      // const editBtnId = btn.id;
+      const currElement = document.getElementById(btn.id);
+      console.log(currElement);
+      console.log(currElement.previousSibling);
+    });
+  });
+
   const deleteBtn = document.querySelectorAll(".delete-btn");
   deleteBtn.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      id = btn.id;
-      console.log("click", { id });
+    btn.addEventListener("click", async () => {
+      try {
+        const roleData = await fetch(
+          `http://localhost:5000/getrole/${btn.id}`,
+          {
+            method: "delete",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const response = await roleData.json();
+        console.log(response);
+      } catch (err) {
+        console.log("Error", err.message);
+      }
+      location.reload();
     });
   });
 };
 
-const roleFormSubmit = async (e) => {
-  e.preventDefault();
+const roleFormSubmit = async () => {
   const data = {
     role: roleInput.value,
   };
@@ -56,7 +79,6 @@ const roleFormSubmit = async (e) => {
   } catch (err) {
     console.log("Error", err.message);
   }
-  roleInput.value = "";
 };
 
 roleForm.addEventListener("submit", roleFormSubmit);

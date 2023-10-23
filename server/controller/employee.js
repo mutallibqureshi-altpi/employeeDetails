@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+//main-page
 const getUser = async (req, res) => {
   const users = [];
   try {
@@ -119,22 +120,9 @@ const deleteUser = (req, res) => {
   });
 };
 
+//role-section
 const getRole = (req, res) => {
   db.query("SELECT * FROM rolemaster", (err, result) => {
-    if (err) throw err;
-    res.status(201).send(result);
-    console.log("read");
-  });
-};
-const getDesignation = (req, res) => {
-  db.query("SELECT * FROM designationmaster", (err, result) => {
-    if (err) throw err;
-    res.status(201).send(result);
-    console.log("read");
-  });
-};
-const getCategory = (req, res) => {
-  db.query("SELECT * FROM categorymaster", (err, result) => {
     if (err) throw err;
     res.status(201).send(result);
     console.log("read");
@@ -156,6 +144,36 @@ const postRole = (req, res) => {
     }
   );
 };
+const updateRole = (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+  db.query(
+    "UPDATE rolemaster SET role=? WHERE id =?",
+    [role, id],
+    (err, result) => {
+      if (err) throw err;
+      console.log("role updated");
+      res.status(201).send(result);
+    }
+  );
+};
+const deleteRole = (req, res) => {
+  const { id } = req.params;
+  db.query("DELETE FROM rolemaster WHERE id = ?", [id], (err, result) => {
+    if (err) throw err;
+    console.log("Role deleted");
+    res.send(result);
+  });
+};
+
+//designation-section
+const getDesignation = (req, res) => {
+  db.query("SELECT * FROM designationmaster", (err, result) => {
+    if (err) throw err;
+    res.status(201).send(result);
+    console.log("read");
+  });
+};
 const postDesignation = (req, res) => {
   const { designation } = req.body;
   if (!designation) {
@@ -171,12 +189,42 @@ const postDesignation = (req, res) => {
     }
   );
 };
+const updateDesignation = (req, res) => {
+  const { id } = req.params;
+  const { designation } = req.body;
+  db.query(
+    "UPDATE designationmaster SET designation=? WHERE id=?",
+    [designation, id],
+    (err, result) => {
+      if (err) throw err;
+      console.log("designation updated");
+      res.status(201).send(result);
+    }
+  );
+};
+
+const deleteDesignation = (req, res) => {
+  const { id } = req.params;
+  db.query("DELETE FROM designationmaster WHERE id =?", [id], (err, result) => {
+    if (err) throw err;
+    console.log("designation deleted");
+    res.status(201).send(result);
+  });
+};
+
+//category-section
+const getCategory = (req, res) => {
+  db.query("SELECT * FROM categorymaster", (err, result) => {
+    if (err) throw err;
+    res.status(201).send(result);
+    console.log("read");
+  });
+};
 const postCategory = (req, res) => {
   const { category } = req.body;
   if (!category) {
     return res.send(400).send("This is required");
   }
-
   db.query(
     "INSERT INTO categorymaster (category) VALUES (?)",
     [category],
@@ -187,6 +235,27 @@ const postCategory = (req, res) => {
     }
   );
 };
+const updateCategory = (req, res) => {
+  const { id } = req.params;
+  const { category } = req.body;
+  db.query(
+    "UPDATE categorymaster SET category=? WHERE id=?",
+    [category, id],
+    (err, result) => {
+      if (err) throw err;
+      console.log("Category updated");
+      res.status(201).send(result);
+    }
+  );
+};
+const deleteCategory = (req, res) => {
+  const { id } = req.params;
+  db.query("DELETE FROM categorymaster WHERE id=?", [id], (err, result) => {
+    if (err) throw err;
+    console.log("category deleted");
+    res.status(201).send(result);
+  });
+};
 
 module.exports = {
   getUser,
@@ -194,9 +263,15 @@ module.exports = {
   updateUser,
   deleteUser,
   getRole,
-  getDesignation,
-  getCategory,
   postRole,
+  updateRole,
+  deleteRole,
+  getDesignation,
   postDesignation,
+  updateDesignation,
+  deleteDesignation,
+  getCategory,
   postCategory,
+  updateCategory,
+  deleteCategory,
 };
