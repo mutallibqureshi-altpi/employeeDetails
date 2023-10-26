@@ -1,6 +1,7 @@
 const formSubmit = document.getElementById("form-submit");
 const firstName = document.getElementById("input-box1");
 const lastName = document.getElementById("input-box2");
+const address = document.getElementById("address");
 const role = document.getElementById("dropdown1");
 const designation = document.getElementById("dropdown2");
 const category = document.getElementById("dropdown3");
@@ -165,6 +166,7 @@ const submitFormBtn = async (e) => {
   const data = {
     firstName: firstName.value,
     lastName: lastName.value,
+    address: address.value,
     role_id: role.value,
     designation_id: designation.value,
     category_id: category.value,

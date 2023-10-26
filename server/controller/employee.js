@@ -78,18 +78,19 @@ const getUser = async (req, res) => {
 };
 
 const postUser = (req, res) => {
-  const { firstName, lastName, role_id, designation_id, category_id } =
+  const { firstName, lastName, address, role_id, designation_id, category_id } =
     req.body;
+  console.log(req.body);
   if (!firstName || !lastName) {
     res.status(400).send("This is required");
     return;
   }
 
   db.query(
-    "INSERT INTO employeemaster (firstname, lastname,role_id, designation_id, category_id) VALUES (?,?,?,?,?)",
-    [firstName, lastName, role_id, designation_id, category_id],
+    "INSERT INTO employeemaster (firstname, lastname, address, role_id, designation_id, category_id) VALUES (?,?,?,?,?,?)",
+    [firstName, lastName, address, role_id, designation_id, category_id],
     (err, result) => {
-      if (err) throw err;
+      if (err) throw err.message;
       console.log("Data added");
     }
   );
